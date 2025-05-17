@@ -13,23 +13,30 @@ exports.login = async (req, res) => {
     }
 
     const user = users[0];
+
+    if (user.estado === 0) {
+      return res.status(403).json({ message: 'Usuario deshabilitado. Contacte al administrador.' });
+    }
+
     const isPasswordValid = await bcrypt.compare(contraseña, user.contraseña);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
+    // Datos dentro del token
     const token = generateToken({
-      id: user.id,
+      idusuario: user.idusuario,
       email: user.email,
-      rol: user.rol
+      rol: user.rol,
+      nombre: user.nombre
     });
 
     res.status(200).json({
       message: 'Inicio de sesión exitoso',
       token,
       user: {
-        id: user.id,
+        idusuario: user.idusuario,
         nombre: user.nombre,
         email: user.email,
         rol: user.rol

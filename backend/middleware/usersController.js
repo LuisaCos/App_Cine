@@ -1,11 +1,10 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
-const { generateToken } = require("../config/jwt");
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios (Para administrador)
 exports.getAllUsers = async (req, res) => {
   try {
-    const [users] = await db.execute('SELECT id, nombre, email, rol FROM usuario');
+    const [users] = await db.execute('SELECT idusuario, nombre, email, rol, estado FROM usuario');
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: 'Error al obtener usuarios' });
@@ -16,7 +15,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   const { id } = req.params;
   try {
-    const [rows] = await db.execute('SELECT id, nombre, email, rol FROM usuario WHERE id = ?', [id]);
+    const [rows] = await db.execute('SELECT idusuario, nombre, email, rol, estado FROM usuario WHERE idusuario = ?', [id]);
     if (rows.length === 0) return res.status(404).json({ message: 'Usuario no encontrado' });
     res.status(200).json(rows[0]);
   } catch (err) {
@@ -24,37 +23,28 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// Actualizar usuario
-exports.updateUser = async (req, res) => {
+// Actualizar rol del usuario (Para administrador)
+exports.updateUserRole = async (req, res) => {
   const { id } = req.params;
-  const { nombre, email, contraseña, rol } = req.body;
+  const { rol } = req.body;
+
   try {
-    let query = 'UPDATE usuario SET nombre = ?, email = ?, rol = ?';
-    let params = [nombre, email, rol];
-
-    if (contraseña) {
-      const hashedPassword = await bcrypt.hash(contraseña, 10);
-      query += ', contraseña = ?';
-      params.push(hashedPassword);
-    }
-
-    query += ' WHERE id = ?';
-    params.push(id);
-
-    await db.execute(query, params);
-    res.status(200).json({ message: 'Usuario actualizado correctamente' });
+    await db.execute('UPDATE usuario SET rol = ? WHERE idusuario = ?', [rol, id]);
+    res.status(200).json({ message: 'Rol actualizado correctamente' });
   } catch (err) {
-    res.status(500).json({ message: 'Error al actualizar el usuario' });
+    res.status(500).json({ message: 'Error al actualizar el rol del usuario' });
   }
 };
 
-// Eliminar usuario
-exports.deleteUser = async (req, res) => {
+// Actualizar estado (habilitar o deshabilitar usuario)
+exports.toggleUserStatus = async (req, res) => {
   const { id } = req.params;
+  const { estado } = req.body; //1 es activo, 0 desactivado
+
   try {
-    await db.execute('DELETE FROM usuario WHERE id = ?', [id]);
-    res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    await db.execute('UPDATE usuario SET estado = ? WHERE idusuario = ?', [estado, id]);
+    res.status(200).json({ message: 'Estado del usuario actualizado correctamente' });
   } catch (err) {
-    res.status(500).json({ message: 'Error al eliminar el usuario' });
+    res.status(500).json({ message: 'Error al actualizar el estado del usuario' });
   }
 };

@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
-// Usa las rutas
+// Carga de rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
