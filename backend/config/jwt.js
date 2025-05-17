@@ -7,7 +7,7 @@ const authenticateJWT = (req, res, next) => {
             if (err) {
                 return res.sendStatus(403); 
             }
-            req.user = user; // Almacena la información del usuario en la solicitud
+            req.user = user; // Información del usuario almacenada en la solicitud.
             next();
         });
     } else {
