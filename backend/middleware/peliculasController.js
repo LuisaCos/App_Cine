@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 exports.obtainAll = async (req, res) => {
   try {
-    const [peliculas] = await db.execute('SELECT * FROM Peliculas');
+    const [peliculas] = await db.execute('SELECT * FROM peliculas');
     res.status(200).json(peliculas);
   } catch (error) {
     console.error('Error al obtener películas:', error);
@@ -13,7 +13,7 @@ exports.obtainAll = async (req, res) => {
 exports.obtainMovie = async (req, res) => {
   try {
     const { id } = req.params;
-    const [pelicula] = await db.execute('SELECT * FROM Peliculas WHERE idpelicula = ?', [id]);
+    const [pelicula] = await db.execute('SELECT * FROM peliculas WHERE idpelicula = ?', [id]);
 
     if (pelicula.length === 0) {
       return res.status(404).json({ message: 'Película no encontrada' });
@@ -35,7 +35,7 @@ exports.createMovie = async (req, res) => {
 
   try {
     const [result] = await db.execute(
-      'INSERT INTO Peliculas (titulo, poster, duracion, descripcion, clasificacion, genero) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO peliculas (titulo, poster, duracion, descripcion, clasificacion, genero) VALUES (?, ?, ?, ?, ?, ?)',
       [titulo, poster || null, duracion, descripcion, clasificacion, genero]
     );
 
@@ -62,14 +62,15 @@ exports.updateMovie = async (req, res) => {
   const { titulo, poster, duracion, descripcion, clasificacion, genero } = req.body;
 
   try {
-    const [peliculaExiste] = await db.execute('SELECT * FROM Peliculas WHERE idpelicula = ?', [id]);
+    const idInt = parseInt(id, 10); 
+    const [peliculaExiste] = await db.execute('SELECT * FROM peliculas WHERE idpelicula = ?', [idInt]);
 
     if (peliculaExiste.length === 0) {
       return res.status(404).json({ message: 'Película no encontrada' });
     }
 
     await db.execute(
-      'UPDATE Peliculas SET titulo = ?, poster = ?, duracion = ?, descripcion = ?, clasificacion = ?, genero = ? WHERE idpelicula = ?',
+      'UPDATE peliculas SET titulo = ?, poster = ?, duracion = ?, descripcion = ?, clasificacion = ?, genero = ? WHERE idpelicula = ?',
       [
         titulo || peliculaExiste[0].titulo,
         poster || peliculaExiste[0].poster,
@@ -92,13 +93,13 @@ exports.deleteMovie = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const [peliculaExiste] = await db.execute('SELECT * FROM Peliculas WHERE idpelicula = ?', [id]);
+    const [peliculaExiste] = await db.execute('SELECT * FROM peliculas WHERE idpelicula = ?', [id]);
 
     if (peliculaExiste.length === 0) {
       return res.status(404).json({ message: 'Película no encontrada' });
     }
 
-    await db.execute('DELETE FROM Peliculas WHERE idpelicula = ?', [id]);
+    await db.execute('DELETE FROM peliculas WHERE idpelicula = ?', [id]);
     res.status(200).json({ message: 'Película eliminada exitosamente' });
   } catch (error) {
     console.error('Error al eliminar película:', error);

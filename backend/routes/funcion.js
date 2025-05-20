@@ -13,4 +13,10 @@ router.put('/funcion/:id', authenticateJWT, isAdmin, funcionesController.updateF
 // Listar funciones
 router.get('/funcion', funcionesController.obtainFunction);
 
+//obtiene detalles de una función por ID
+router.get('/funcion/:id', funcionesController.obtainFunction);
+
+// obtiene estado de los asientos de una función
+router.get('/funcion/:id/asientos', funcionesController.obtenerAsientosFuncion);
+
 module.exports = router;
