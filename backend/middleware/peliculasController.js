@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.obtenerPeliculas = async (req, res) => {
+exports.obtainAll = async (req, res) => {
   try {
     const [peliculas] = await db.execute('SELECT * FROM Peliculas');
     res.status(200).json(peliculas);
@@ -10,7 +10,7 @@ exports.obtenerPeliculas = async (req, res) => {
   }
 };
 
-exports.obtenerPelicula = async (req, res) => {
+exports.obtainMovie = async (req, res) => {
   try {
     const { id } = req.params;
     const [pelicula] = await db.execute('SELECT * FROM Peliculas WHERE idpelicula = ?', [id]);
@@ -26,7 +26,7 @@ exports.obtenerPelicula = async (req, res) => {
   }
 };
 
-exports.crearPelicula = async (req, res) => {
+exports.createMovie = async (req, res) => {
   const { titulo, poster, duracion, descripcion, clasificacion, genero } = req.body;
 
   if (!titulo || !duracion) {
@@ -57,7 +57,7 @@ exports.crearPelicula = async (req, res) => {
   }
 };
 
-exports.actualizarPelicula = async (req, res) => {
+exports.updateMovie = async (req, res) => {
   const { id } = req.params;
   const { titulo, poster, duracion, descripcion, clasificacion, genero } = req.body;
 
@@ -88,7 +88,7 @@ exports.actualizarPelicula = async (req, res) => {
   }
 };
 
-exports.eliminarPelicula = async (req, res) => {
+exports.deleteMovie = async (req, res) => {
   const { id } = req.params;
 
   try {

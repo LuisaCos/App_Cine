@@ -5,18 +5,9 @@ const isAdmin = require('../middleware/isAdmin');
 const salasController = require('../middleware/salasController');
 
 // Crear sala (permiso de admin)
-router.post('/salas', authenticateJWT, isAdmin, salasController.createSala);
+router.post('/', authenticateJWT, isAdmin, salasController.createSala)
 
-// Obtener/ver todas las salas
-router.get('/salas', salasController.getAllSalas);
-
-// Actualizar sala (permiso de admin)
-router.put('/salas/:id', authenticateJWT, isAdmin, salasController.updateSala);
-
-// Modificar capacidad de sala (permiso de admin)
-router.put('/salas/:id/capacidad', authenticateJWT, isAdmin, salasController.updateCapacidad);
-
-// Eliminar sala (permiso de admin)
-router.delete('/salas/:id', authenticateJWT, isAdmin, salasController.deleteSala);
+// Actualizar o modificar sala (permiso de admin)
+router.put('/:idsalas', authenticateJWT, isAdmin, salasController.updateCapacitySala) 
 
 module.exports = router;

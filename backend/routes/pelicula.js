@@ -4,14 +4,19 @@ const authenticateJWT = require('../config/jwt');
 const isAdmin = require('../middleware/isAdmin');
 const peliculasController = require('../middleware/peliculasController');
 
-router.get('/peliculas', peliculasController.obtenerPeliculas);
+// Obtener todas las películas
+router.get('/peliculas', peliculasController.obtainAll);
 
-router.get('/peliculas/:id', peliculasController.obtenerPelicula);
+// Obtener una película específica
+router.get('/peliculas/:id', peliculasController.obtainMovie);
 
-router.post('/peliculas', authenticateJWT, isAdmin, peliculasController.crearPelicula);
+// Crear una nueva película (solo admin)
+router.post('/peliculas', authenticateJWT, isAdmin, peliculasController.createMovie);
 
-router.put('/peliculas/:id', authenticateJWT, isAdmin, peliculasController.actualizarPelicula);
+// Actualizar una película (solo admin)
+router.put('/peliculas/:id', authenticateJWT, isAdmin, peliculasController.updateMovie);
 
-router.delete('/peliculas/:id', authenticateJWT, isAdmin, peliculasController.eliminarPelicula);
+// Eliminar una película (solo admin)
+router.delete('/peliculas/:id', authenticateJWT, isAdmin, peliculasController.deleteMovie);
 
 module.exports = router;
